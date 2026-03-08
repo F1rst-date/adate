@@ -48,9 +48,10 @@
 
         /* --- THE BACKGROUND IMAGES --- */
         #intro { background-image: url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=2070'); }
-        #dinner { background-image: url('https://lh3.googleusercontent.com/gps-cs-s/AHVAweq-XInjD7eBwiS133UzuDukKaxYjRpqtUjks33h_WYxXEe5Q6g52-xoWqWej3ZTgGdDEvDUZRHuzF34y0V1NK9lBjmiH5Kk5pYBASmKEK2_Dp4GEZs9v859qwOba-AzuE-cdxqxMKGCZtrG=s680-w680-h510'); }
-        #movie { background-image: url('https://lh3.googleusercontent.com/gps-cs-s/AHVAweq2ptDZ4C-41y3lxKaIC1R3oYUrdvTn3W6YxMleIpPbmBq0gbzep73wp03_sViBeG4EYzLL-AqJCUnXoukg1cANzM_XWNgKc1WwRl2iLECzaaLtEkc8c5QVW52vo9SZFicABup3wA=s680-w680-h510'); }
-        #final { background-image: url('https://images.unsplash.com/photo-1490730141103-6cac27aaab94?q=80&w=2070'); }
+        #disclosure { background-image: url('https://www.asiakingtravel.com/cuploads/files/Vietnam-Autumn-in-Hanoi-Old-Quarter-Fall-Leaves-and-Woman-in-Window.jpeg'); } /* Friendly Cafe Vibe */
+        #dinner { background-image: url('https://cafewhyn.food.blog/wp-content/uploads/2021/10/3-cac-cua-hang-pizza-o-ha-noi.jpg?w=1024'); } /* Pizza 4P's Vibe */
+        #movie { background-image: url('https://www.asiakingtravel.com/cuploads/files/2-16947406707121892253162.jpg'); } /* Cozy Coffee/Walk Vibe */
+        #final { background-image: url('https://images.vietnamtourism.gov.vn/en//images/2022/hanoi_4.jpg'); }
 
         h1 { font-size: 3.5rem; margin-bottom: 15px; text-shadow: 2px 2px 10px rgba(0,0,0,0.6); font-style: italic; }
         p { font-size: 1.5rem; max-width: 650px; line-height: 1.6; opacity: 0.95; }
@@ -78,33 +79,13 @@
         }
         button:hover { background-color: #ff6b81; transform: translateY(-3px); }
 
-        /* --- THE MUSIC BUTTON --- */
-        #music-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 30px;
-            cursor: pointer;
-            z-index: 10000; 
-            font-family: 'Georgia', serif;
-            font-size: 1rem;
-            backdrop-filter: blur(5px);
-            transition: 0.3s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-        #music-btn:hover { background: rgba(255, 255, 255, 0.4); transform: translateY(0); }
-
+        /* Smooth gliding animation for the No button */
         #no-btn {
             background-color: transparent;
             border: 2px solid white;
             color: white;
             box-shadow: none;
-            /* Makes the button glide smoothly when it jumps */
-            transition: top 0.4s ease-in-out, left 0.4s ease-in-out, background-color 0.3s;
+            transition: top 0.5s ease-in-out, left 0.5s ease-in-out, background-color 0.3s;
         }
         #no-btn:hover { background-color: rgba(255,255,255,0.1); transform: none; }
 
@@ -166,10 +147,8 @@
 <body>
 
     <audio id="bg-music" loop>
-        <source src="song.mp3" type="audio/mpeg">
+        <source src="https://cdn.pixabay.com/download/audio/2022/02/07/audio_7392ee5ca6.mp3" type="audio/mpeg">
     </audio>
-    
-    <button id="music-btn" onclick="toggleMusic()">🎵 Play Music</button>
 
     <section id="intro">
         <div class="content-wrapper">
@@ -179,10 +158,18 @@
         <div class="scroll-hint">Scroll down ↓</div>
     </section>
 
+    <section id="disclosure">
+        <div class="content-wrapper">
+            <h1>Full Disclosure...</h1>
+            <p>I know going out with someone you barely know is a bit of a leap of faith. But I promise I can hold a solid conversation, I'm genuinely a good listener, and I will absolutely let you have the last slice of pizza. 🍕✌️</p>
+        </div>
+        <div class="scroll-hint">The Plan ↓</div>
+    </section>
+
     <section id="dinner">
         <div class="content-wrapper">
             <h1>Step 1: Pizza 4P's</h1>
-            <p>Amazing pizza, great cheese, and a cozy vibe. A perfect chance for us to share a meal, skip the small talk, and actually get to know each other. 🍕🥂</p>
+            <p>Amazing pizza, great cheese, and a cozy vibe. A perfect chance for us to share a meal, skip the small talk, and actually get to know each other. 🥂</p>
         </div>
         <div class="scroll-hint">Next ↓</div>
     </section>
@@ -213,38 +200,36 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <script>
-        // --- 1. THE MUSIC CONTROLS ---
-        let isPlaying = false;
+        // --- 1. THE MUSIC AUTOPLAY MAGIC (WITH FADE-IN) ---
+        let musicStarted = false;
         
-        function toggleMusic() {
-            const music = document.getElementById('bg-music');
-            const btn = document.getElementById('music-btn');
-            
-            if (isPlaying) {
-                music.pause();
-                btn.innerText = "🎵 Play Music";
-            } else {
-                music.play();
-                btn.innerText = "⏸️ Pause Music";
-            }
-            isPlaying = !isPlaying;
-        }
-        
-        // Tries to auto-start when she first touches the screen
-        function autoStartMusic() {
-            if (!isPlaying) {
+        function startMusic() {
+            if (!musicStarted) {
                 let music = document.getElementById('bg-music');
+                music.volume = 0; // Start at zero volume
+                
                 music.play().then(() => {
-                    isPlaying = true;
-                    document.getElementById('music-btn').innerText = "⏸️ Pause Music";
+                    musicStarted = true; 
+                    
+                    // Smooth volume fade-in over 2 seconds
+                    let fadeAudio = setInterval(function () {
+                        if (music.volume < 1.0) {
+                            let newVolume = music.volume + 0.05;
+                            music.volume = Math.min(newVolume, 1.0); 
+                        } else {
+                            clearInterval(fadeAudio);
+                        }
+                    }, 100); 
+                    
                 }).catch(() => {
-                    // If blocked, she can still use the button!
+                    // Browser blocked it, will try again next touch/scroll
                 });
             }
         }
-        document.addEventListener('click', autoStartMusic, {once: true});
-        document.addEventListener('touchstart', autoStartMusic, {once: true});
-        document.addEventListener('scroll', autoStartMusic, {once: true});
+        // Listeners to start the music on her first touch/scroll
+        document.addEventListener('click', startMusic);
+        document.addEventListener('touchstart', startMusic);
+        document.addEventListener('scroll', startMusic);
 
         // --- 2. THE BUTTON LOGIC ---
         let clickCount = 0;
@@ -257,7 +242,7 @@
             alert("Awesome! I'm really looking forward to it. ❤️ Sending you to Messenger...");
 
             // CHANGE YOUR FACEBOOK USERNAME HERE
-            const fbUsername = "Coepgrep"; 
+            const fbUsername = "YOUR_FB_USERNAME"; 
             const message = encodeURIComponent("I just saw the invite... I'd love to go! 😊");
             
             setTimeout(() => {
@@ -268,20 +253,20 @@
         function moveButton() {
             const noBtn = document.getElementById('no-btn');
             
-            // Fixes the first-click snap
+            // Fix the first-click snap by logging its exact starting position
             if (clickCount === 0) {
                 const rect = noBtn.getBoundingClientRect();
                 noBtn.style.position = 'fixed';
                 noBtn.style.left = rect.left + 'px';
                 noBtn.style.top = rect.top + 'px';
                 noBtn.style.zIndex = '999';
-                noBtn.offsetHeight; 
+                noBtn.offsetHeight; // Forces the browser to calculate the position
             }
             
             clickCount++; 
 
             if (clickCount < 5) {
-                // Keeps the button from covering the text
+                // Ensure the button never overlaps your text box
                 const textArea = document.querySelector('#final .content-wrapper').getBoundingClientRect();
                 let newX, newY;
                 let isOverlapping = true;
@@ -290,6 +275,7 @@
                     newX = Math.random() * (window.innerWidth - noBtn.offsetWidth);
                     newY = Math.random() * (window.innerHeight - noBtn.offsetHeight);
 
+                    // Create a safe forcefield around the text
                     const safeX = (newX + noBtn.offsetWidth < textArea.left - 20) || (newX > textArea.right + 20);
                     const safeY = (newY + noBtn.offsetHeight < textArea.top - 20) || (newY > textArea.bottom + 20);
 
@@ -302,12 +288,12 @@
                 noBtn.style.top = newY + 'px';
                 
                 if(clickCount === 1) noBtn.innerText = "Are you sure? 🤔";
-                if(clickCount === 2) noBtn.innerText = "It's Pizza 4P's! 🍕";
+                if(clickCount === 2) noBtn.innerText = "But... Pizza! 🍕";
                 if(clickCount === 3) noBtn.innerText = "You drive a hard bargain. 😅";
                 if(clickCount === 4) noBtn.innerText = "Okay, last chance! ⏳";
                 
             } else {
-                // The 5th time: Rain screen
+                // The 5th time: Friendly Alert followed by Cinematic Fade
                 alert("Haha, totally fair! I'll just have to eat enough for both of us. Have a wonderful week! 😊");
                 const rainScreen = document.getElementById('rain-screen');
                 rainScreen.style.opacity = '1';
