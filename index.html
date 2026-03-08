@@ -192,7 +192,7 @@
 
     <div id="music-arrow">Turn on sound ➔</div>
     
-    <button id="music-btn" onclick="toggleMusic()">🎵 Play Music</button>
+    < id="music-btn" onclick="toggleMusic()">🎵 Play Music</button>
 
     <section id="intro">
         <div class="content-wrapper">
@@ -281,7 +281,11 @@
         }
 
         // Try to auto-start on her first touch/scroll!
-        function autoStartMusic() {
+        // Try to auto-start on her first touch/scroll!
+        function autoStartMusic(event) {
+            // THE FIX: If the click hit the button, ignore the background click!
+            if (event && event.target && event.target.id === 'music-btn') return;
+            
             if (!musicStarted) {
                 toggleMusic();
             }
@@ -362,4 +366,5 @@
     </script>
 </body>
 </html>
+
 
