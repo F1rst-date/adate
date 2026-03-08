@@ -186,13 +186,13 @@
 </head>
 <body>
 
-    <audio id="bg-music" autoplay loop>
+    <audio id="bg-music" loop>
         <source src="song.mp3" type="audio/mpeg">
     </audio>
 
     <div id="music-arrow">Turn on sound ➔</div>
     
-    < id="music-btn" onclick="toggleMusic()">🎵 Play Music</button>
+    <button id="music-btn" onclick="event.stopPropagation(); toggleMusic()">🎵 Play Music</button>
 
     <section id="intro">
         <div class="content-wrapper">
@@ -280,10 +280,9 @@
             }
         }
 
-        // Try to auto-start on her first touch/scroll!
-        // Try to auto-start on her first touch/scroll!
+        // Try to auto-start on her first touch/scroll! (With the button click fix)
         function autoStartMusic(event) {
-            // THE FIX: If the click hit the button, ignore the background click!
+            // Ignore if the click was on the button itself
             if (event && event.target && event.target.id === 'music-btn') return;
             
             if (!musicStarted) {
@@ -366,5 +365,3 @@
     </script>
 </body>
 </html>
-
-
