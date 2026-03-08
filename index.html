@@ -46,7 +46,6 @@
             animation: fadeIn 1.5s ease-out;
         }
 
-        /* --- THE BACKGROUND IMAGES --- */
         #intro { background-image: url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=2070'); }
         #disclosure { background-image: url('https://www.asiakingtravel.com/cuploads/files/Vietnam-Autumn-in-Hanoi-Old-Quarter-Fall-Leaves-and-Woman-in-Window.jpeg'); } /* Friendly Cafe Vibe */
         #dinner { background-image: url('https://cafewhyn.food.blog/wp-content/uploads/2021/10/3-cac-cua-hang-pizza-o-ha-noi.jpg?w=1024'); } /* Pizza 4P's Vibe */
@@ -100,6 +99,26 @@
             opacity: 0.7;
         }
 
+        /* --- THE MUSIC BUTTON --- */
+        #music-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            z-index: 10000; /* Keeps it on top of everything */
+            font-family: 'Georgia', serif;
+            font-size: 1rem;
+            backdrop-filter: blur(5px);
+            transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        #music-btn:hover { background: rgba(255, 255, 255, 0.4); }
+
         /* --- THE CINEMATIC RAIN OVERLAY --- */
         #rain-screen {
             position: fixed;
@@ -142,25 +161,6 @@
             40% {transform: translateY(-10px);}
             60% {transform: translateY(-5px);}
         }
-        /* --- THE MUSIC BUTTON --- */
-        #music-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 30px;
-            cursor: pointer;
-            z-index: 10000; /* Keeps it on top of everything */
-            font-family: 'Georgia', serif;
-            font-size: 1rem;
-            backdrop-filter: blur(5px);
-            transition: 0.3s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-        #music-btn:hover { background: rgba(255, 255, 255, 0.4); }
     </style>
 </head>
 <body>
@@ -168,6 +168,7 @@
     <audio id="bg-music" loop>
         <source src="song.mp3" type="audio/mpeg">
     </audio>
+
     <button id="music-btn" onclick="toggleMusic()">🎵 Play Music</button>
 
     <section id="intro">
@@ -220,7 +221,6 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <script>
-        // --- 1. THE MUSIC AUTOPLAY MAGIC (WITH FADE-IN) ---
         // --- 1. THE MUSIC PLAYER LOGIC ---
         let musicStarted = false;
         
@@ -243,25 +243,25 @@
                             clearInterval(fadeAudio);
                         }
                     }, 100); 
-                }).catch(() => {
-                    alert("Oops! The music link might be blocked. Try downloading an MP3 instead!");
+                }).catch((e) => {
+                    console.log("Music blocked by browser until direct interaction.");
                 });
             } else {
                 music.pause();
                 btn.innerText = "🎵 Play Music";
+                musicStarted = false;
             }
         }
 
-        // Still try to auto-start on her first touch just in case!
-        document.addEventListener('click', function() {
-            if(!musicStarted) toggleMusic();
-        }, { once: true });
-        document.addEventListener('touchstart', function() {
-            if(!musicStarted) toggleMusic();
-        }, { once: true });
-        document.addEventListener('scroll', function() {
-            if(!musicStarted) toggleMusic();
-        }, { once: true });
+        // Try to auto-start on her first touch/scroll!
+        function autoStartMusic() {
+            if (!musicStarted) {
+                toggleMusic();
+            }
+        }
+        document.addEventListener('click', autoStartMusic, { once: true });
+        document.addEventListener('touchstart', autoStartMusic, { once: true });
+        document.addEventListener('scroll', autoStartMusic, { once: true });
 
         // --- 2. THE BUTTON LOGIC ---
         let clickCount = 0;
@@ -335,6 +335,3 @@
     </script>
 </body>
 </html>
-
-
-
