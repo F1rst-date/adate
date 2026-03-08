@@ -46,6 +46,7 @@
             animation: fadeIn 1.5s ease-out;
         }
 
+        /* --- THE BACKGROUND IMAGES --- */
         #intro { background-image: url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=2070'); }
         #disclosure { background-image: url('https://www.asiakingtravel.com/cuploads/files/Vietnam-Autumn-in-Hanoi-Old-Quarter-Fall-Leaves-and-Woman-in-Window.jpeg'); } /* Friendly Cafe Vibe */
         #dinner { background-image: url('https://cafewhyn.food.blog/wp-content/uploads/2021/10/3-cac-cua-hang-pizza-o-ha-noi.jpg?w=1024'); } /* Pizza 4P's Vibe */
@@ -99,7 +100,7 @@
             opacity: 0.7;
         }
 
-        /* --- THE MUSIC BUTTON --- */
+        /* --- THE MUSIC BUTTON & ARROW --- */
         #music-btn {
             position: fixed;
             top: 20px;
@@ -110,7 +111,7 @@
             padding: 10px 20px;
             border-radius: 30px;
             cursor: pointer;
-            z-index: 10000; /* Keeps it on top of everything */
+            z-index: 10000;
             font-family: 'Georgia', serif;
             font-size: 1rem;
             backdrop-filter: blur(5px);
@@ -118,6 +119,26 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
         #music-btn:hover { background: rgba(255, 255, 255, 0.4); }
+
+        #music-arrow {
+            position: fixed;
+            top: 28px;
+            right: 180px;
+            color: #ff4757;
+            font-size: 1.1rem;
+            font-style: italic;
+            font-weight: bold;
+            z-index: 10000;
+            pointer-events: none;
+            animation: bounceRight 1.5s infinite;
+            transition: opacity 0.5s ease-out;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+        }
+
+        @keyframes bounceRight {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(10px); }
+        }
 
         /* --- THE CINEMATIC RAIN OVERLAY --- */
         #rain-screen {
@@ -165,10 +186,12 @@
 </head>
 <body>
 
-    <audio id="bg-music" loop>
+    <audio id="bg-music" autoplay loop>
         <source src="song.mp3" type="audio/mpeg">
     </audio>
 
+    <div id="music-arrow">Turn on sound ➔</div>
+    
     <button id="music-btn" onclick="toggleMusic()">🎵 Play Music</button>
 
     <section id="intro">
@@ -227,12 +250,16 @@
         function toggleMusic() {
             const music = document.getElementById('bg-music');
             const btn = document.getElementById('music-btn');
+            const arrow = document.getElementById('music-arrow');
             
             if (music.paused) {
                 music.volume = 0; // Start at zero for the fade-in
                 music.play().then(() => {
                     btn.innerText = "⏸️ Pause Music";
                     musicStarted = true;
+                    
+                    // Hide the pointing arrow gracefully!
+                    if (arrow) arrow.style.opacity = '0';
                     
                     // Smooth volume fade-in over 2 seconds
                     let fadeAudio = setInterval(function () {
