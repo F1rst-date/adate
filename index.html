@@ -168,6 +168,7 @@
     <audio id="bg-music" loop>
         <source src="https://cdn.pixabay.com/download/audio/2022/02/07/audio_7392ee5ca6.mp3" type="audio/mpeg">
     </audio>
+    <button id="music-btn" onclick="toggleMusic()">🎵 Play Music</button>
 
     <section id="intro">
         <div class="content-wrapper">
@@ -220,15 +221,18 @@
 
     <script>
         // --- 1. THE MUSIC AUTOPLAY MAGIC (WITH FADE-IN) ---
+        // --- 1. THE MUSIC PLAYER LOGIC ---
         let musicStarted = false;
         
-        function startMusic() {
-            if (!musicStarted) {
-                let music = document.getElementById('bg-music');
-                music.volume = 0; // Start at zero volume
-                
+        function toggleMusic() {
+            const music = document.getElementById('bg-music');
+            const btn = document.getElementById('music-btn');
+            
+            if (music.paused) {
+                music.volume = 0; // Start at zero for the fade-in
                 music.play().then(() => {
-                    musicStarted = true; 
+                    btn.innerText = "⏸️ Pause Music";
+                    musicStarted = true;
                     
                     // Smooth volume fade-in over 2 seconds
                     let fadeAudio = setInterval(function () {
@@ -239,16 +243,25 @@
                             clearInterval(fadeAudio);
                         }
                     }, 100); 
-                    
                 }).catch(() => {
-                    // Browser blocked it, will try again next touch/scroll
+                    alert("Oops! The music link might be blocked. Try downloading an MP3 instead!");
                 });
+            } else {
+                music.pause();
+                btn.innerText = "🎵 Play Music";
             }
         }
-        // Listeners to start the music on her first touch/scroll
-        document.addEventListener('click', startMusic);
-        document.addEventListener('touchstart', startMusic);
-        document.addEventListener('scroll', startMusic);
+
+        // Still try to auto-start on her first touch just in case!
+        document.addEventListener('click', function() {
+            if(!musicStarted) toggleMusic();
+        }, { once: true });
+        document.addEventListener('touchstart', function() {
+            if(!musicStarted) toggleMusic();
+        }, { once: true });
+        document.addEventListener('scroll', function() {
+            if(!musicStarted) toggleMusic();
+        }, { once: true });
 
         // --- 2. THE BUTTON LOGIC ---
         let clickCount = 0;
@@ -322,4 +335,5 @@
     </script>
 </body>
 </html>
+
 
